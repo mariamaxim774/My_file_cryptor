@@ -14,11 +14,13 @@ class FileHandler:
         else:
             return False
     def search_file(self):
-        for root,directories,files in os.walk("C:\\"):
+        for root,directories,files in os.walk("C:\\Users\\User\\Desktop\\Python\\github\\Python2024\\myFileCryptor"):
             if self.filename in files:
                 return os.path.join(root,self.filename)
         else:
             return None
+
+
 class FileCryptor:
     def __init__(self,filename,password):
         self.filename=filename
@@ -28,12 +30,15 @@ class FileCryptor:
     def  decrypt(filename):
         print('In decrypt')
     def compute_hash(self):
-        hasher=hashlib.sha3_256()
-        with open(self.filename,'rb') as f:
-            print(hasher.block_size())
+        hash=hashlib.sha256() #blocuri de 64 bytes
+        with open(self.filename, "rb") as file:  #
+            data=file.read()
+            hash.update(data)
+            print(hash.hexdigest())
+
 def main():
     if len(sys.argv)!=4:
-        return 'Trebuie sa apelezi scriptul astfel: python main.py <crypt>/<decrypt> filename password'
+        print('Trebuie sa apelezi scriptul astfel: python main.py <crypt>/<decrypt> filename password')
         sys.exit(1)
 
     command = sys.argv[1]
@@ -43,7 +48,7 @@ def main():
 
     fileHandler=FileHandler(file)
     if not fileHandler.is_file():
-        return 'Fisierul nu exista, dati un fisier valid'
+        print('Fisierul nu exista, dati un fisier valid')
         sys.exit(1)
     else:
         cryptor = FileCryptor(file,password)
@@ -51,9 +56,10 @@ def main():
             cryptor.compute_hash()
             #exit_file=cryptor.crypt()
         elif command=='decrypt':
+            print('decrypt')
             #exit_file=cryptor.decrypt()
         else:
-            return 'Singurele comenzi ce pot fi apelate sunt <crypt> si <decrypt>'
+            print('Singurele comenzi ce pot fi apelate sunt <crypt> si <decrypt>')
 
 if __name__ == '__main__':
     main()

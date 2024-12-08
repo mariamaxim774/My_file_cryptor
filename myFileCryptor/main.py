@@ -4,6 +4,7 @@ import sys
 import hashlib
 
 
+
 class FileHandler:
     def __init__(self,filename):
         self.filename=filename
@@ -22,19 +23,32 @@ class FileHandler:
 
 
 class FileCryptor:
+
     def __init__(self,filename,password):
         self.filename=filename
         self.password=password
-    def crypt(filename):
-        print('In crypt')
-    def  decrypt(filename):
+
+    def crypt(self):
+        out_file=f"{self.filename}.crypted"
+        file_hash=self.compute_hash()
+
+        with open(self.filename,'rb') as input_file, open(out_file, 'wb') as output_file:
+            output_file.write(file_hash)
+            for index,byte in  enumerate(input_file.read()):
+                password_offset=index%len(self.password)
+                key=ord(self.password[password_offset])
+                encrypted_byte=(byte+key)%256
+                output_file.write(bytes([encrypted_byte]))
+
+    def  decrypt(self):
         print('In decrypt')
+
     def compute_hash(self):
-        hash=hashlib.sha256() #blocuri de 64 bytes
+        hash=hashlib.sha256()#64 bytes
         with open(self.filename, "rb") as file:  #
             data=file.read()
             hash.update(data)
-            print(hash.hexdigest())
+            return hash.digest()
 
 def main():
     if len(sys.argv)!=4:
@@ -53,8 +67,7 @@ def main():
     else:
         cryptor = FileCryptor(file,password)
         if command=='crypt':
-            cryptor.compute_hash()
-            #exit_file=cryptor.crypt()
+            cryptor.crypt()
         elif command=='decrypt':
             print('decrypt')
             #exit_file=cryptor.decrypt()

@@ -36,7 +36,7 @@ class FileCryptor:
 
         with open(self.filename, 'rb') as input_file, open(out_file, 'wb') as output_file:
             output_file.write(file_hash)  
-        
+
             encrypted_data = bytearray()
             for index, byte in enumerate(input_file.read()):
                 password_offset = index % len(self.password)
@@ -46,6 +46,7 @@ class FileCryptor:
 
             output_file.write(encrypted_data)
             print(f"Fisier criptat: {out_file}")
+
 
     def decrypt(self):
         real_file = self.filename.replace('.crypted', '')
@@ -62,7 +63,7 @@ class FileCryptor:
                 key = ord(self.password[password_offset])
                 decrypted_byte = (byte - key) % 256
                 decrypted_data.append(decrypted_byte)
-
+                
             output_file.write(decrypted_data)
             print(f"Fisier decriptat: {real_file}")
 

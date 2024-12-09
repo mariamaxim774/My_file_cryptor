@@ -1,9 +1,6 @@
-import fileinput
 import os
-import os.path
 import sys
 import hashlib
-import urllib.parse
 
 
 class FileHandler:
@@ -16,6 +13,7 @@ class FileHandler:
             return True
         else:
             return False
+
     def search_file(self):
         for root,directories,files in os.walk("C:\\Users\\User\\Desktop\\Python\\github\\Python2024\\myFileCryptor"):
             if self.filename in files:
@@ -37,27 +35,27 @@ class FileCryptor:
         with open(self.filename, 'rb') as input_file, open(out_file, 'wb') as output_file:
             output_file.write(file_hash)  
 
+
             encrypted_data = bytearray()
-            for index, byte in enumerate(input_file.read()):
+            for index, byte in enumerate(file_to_encrypt.read()):
                 password_offset = index % len(self.password)
                 key = ord(self.password[password_offset])
                 encrypted_byte = (byte + key) % 256
                 encrypted_data.append(encrypted_byte)
+
 
             output_file.write(encrypted_data)
             print(f"Fisier criptat: {out_file}")
 
 
     def decrypt(self):
-        real_file = self.filename.replace('.crypted', '')
-
-        with open(self.filename, 'rb') as crypted_file, open(real_file, 'wb') as output_file:
-            file_hash = crypted_file.read(32)
-            print(f"Hash citit din fisier: {file_hash.hex()}")
-
-            encrypted_data = crypted_file.read()
-
+    
+        out_file = self.filename.replace('.crypted', '')
+        with open(self.filename, 'rb') as encrypted_file, open(out_file, 'wb') as decrypted_file:
+            file_hash = encrypted_file.read(32)
+            encrypted_data = encrypted_file.read()
             decrypted_data = bytearray()
+
             for index, byte in enumerate(encrypted_data):
                 password_offset = index % len(self.password)
                 key = ord(self.password[password_offset])
@@ -77,11 +75,15 @@ class FileCryptor:
         else:
             print('Parola este corecta, fisierul a fost decriptat.')
 
-    def compute_hash(self,filename):
+
+    def compute_hash(self,data_to_hash,is_file=False):
        hash = hashlib.sha256()
-       with open(filename, "rb") as file:  #
-           data = file.read()
-           hash.update(data)
+       if is_file:
+           with open(data_to_hash, "rb") as file:  #
+               data = file.read()
+               hash.update(data)
+       else:
+           hash.update(data_to_hash)
        return hash.digest()
 
 def main():

@@ -34,7 +34,6 @@ class FileCryptor:
         with open(self.file_path, 'rb') as file_to_encrypt, open(out_file, 'wb') as encrypted_file:
             encrypted_file.write(file_hash)
 
-
             encrypted_data = bytearray()
             for index, byte in enumerate(file_to_encrypt.read()):
                 password_offset = index % len(self.password)
@@ -46,7 +45,6 @@ class FileCryptor:
 
             print(f"Fisierul criptat este : {out_file}")
         os.remove(self.file_path)
-
 
     def decrypt(self):
 
@@ -61,22 +59,15 @@ class FileCryptor:
                 key = ord(self.password[password_offset])
                 decrypted_byte = (byte - key) % 256
                 decrypted_data.append(decrypted_byte)
-                
-            output_file.write(decrypted_data)
-            print(f"Fisier decriptat: {real_file}")
 
 
-        calculated_hash = self.compute_hash(real_file)
-        print(f"Hash calculat: {calculated_hash.hex()}")  
+            calculated_hash = self.compute_hash(decrypted_data)
 
-
-        if file_hash != calculated_hash:
-             print('Parola pe care ati introdus-o nu este corecta! Incercati din nou!')
-        else:
-            print('Parola este corecta, fisierul a fost decriptat.')
-            decrypted_file.write(decrypted_data)
-
-
+            if file_hash != calculated_hash:
+                print('Parola pe care ati introdus-o nu este corecta! Incercati din nou!')
+            else:
+                print(f'Parola este corecta, fisierul decriptat este: {out_file}')
+                decrypted_file.write(decrypted_data)
 
     def compute_hash(self,data_to_hash,is_file=False):
        hash = hashlib.sha256()
@@ -114,4 +105,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

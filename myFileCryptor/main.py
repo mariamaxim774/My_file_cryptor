@@ -17,7 +17,6 @@ class FileHandler:
     def search_file(self):
         for root,directories,files in os.walk("C:\\Users\\User\\Desktop"):
             if self.filename in files:
-                self.file_path=os.path.join(root,self.filename)
                 return os.path.join(root,self.filename)
         else:
             return None
@@ -46,6 +45,7 @@ class FileCryptor:
             encrypted_file.write(encrypted_data)
 
             print(f"Fisierul criptat este : {out_file}")
+        os.remove(self.file_path)
 
 
     def decrypt(self):
@@ -81,7 +81,7 @@ class FileCryptor:
     def compute_hash(self,data_to_hash,is_file=False):
        hash = hashlib.sha256()
        if is_file:
-           with open(data_to_hash, "rb") as file:  #
+           with open(data_to_hash, "rb") as file:
                data = file.read()
                hash.update(data)
        else:
